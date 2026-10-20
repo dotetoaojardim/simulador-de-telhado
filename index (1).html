@@ -1,0 +1,515 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<!-- Google Tag Manager -->
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-MDFBDRLK');</script>
+<!-- End Google Tag Manager -->
+
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<link rel="icon" href="logo.png">
+<title>Simulador de Telhado Limpo</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="Envie a foto do seu telhado sujo, veja uma simulação do telhado limpo e escolha a cor da tinta emborrachada. Do Teto ao Jardim, Bragança Paulista.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* Layout: ferramenta primeiro (cabeçalho enxuto, foto + resultado + controles), depois preço por m², tipos de limpeza, dúvidas e contato. Tema claro da marca. */
+:root{
+  color-scheme:light;
+  --bg:#FAFAF7; --surface:#FFFFFF; --ink:#3A3A3A; --ink-strong:#2E2E2E; --muted:#6E6E6E;
+  --green:#5C7A4A; --green-dark:#44603A; --sage:#A8C090; --sage-pale:#E9F0E2;
+  --gold:#B08A3E; --gold-pale:#F6EFE0; --ink-block:#2E2E2E; --neg:#9C4A3E; --neg-pale:#F6E9E6; --line:#E3E3DC;
+  --serif:'Fraunces',Cambria,Georgia,serif; --sans:'Work Sans',Calibri,system-ui,sans-serif;
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:16px;line-height:1.55;-webkit-text-size-adjust:100%}
+img{max-width:100%}
+a{color:var(--green-dark)}
+h1,h2,h3{font-family:var(--serif);color:var(--ink-strong);font-weight:600;line-height:1.15;margin:0;text-wrap:balance}
+p{margin:0}
+.wrap{max-width:1160px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+:focus-visible{outline:3px solid var(--gold);outline-offset:2px;border-radius:4px}
+
+/* topo */
+.top{background:var(--surface);border-bottom:1px solid var(--line)}
+.top .wrap{display:flex;align-items:center;gap:14px;padding-block:10px}
+.top img{height:46px;width:auto}
+.brand b{display:block;font-family:var(--serif);font-size:1.15rem;color:var(--green-dark);line-height:1.1}
+.brand span{font-size:.8rem;color:var(--muted)}
+.top .btn{margin-left:auto}
+
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:0;border-radius:999px;padding:12px 22px;font:600 .95rem var(--sans);background:var(--green);color:#fff;cursor:pointer;text-decoration:none;min-height:44px}
+.btn:hover{background:var(--green-dark)}
+.btn.ghost{background:var(--surface);color:var(--green-dark);border:1.5px solid var(--green)}
+.btn.ghost:hover{background:var(--sage-pale)}
+.btn.sm{padding:8px 16px;min-height:38px;font-size:.88rem}
+.btn[disabled]{opacity:.5;cursor:not-allowed}
+.btn svg{width:18px;height:18px;flex:none}
+
+/* hero */
+.hero{padding-block:28px 12px}
+.hero h1{font-size:clamp(1.9rem,4.4vw,2.9rem);max-width:20ch}
+.hero p{margin-top:10px;max-width:60ch;color:var(--muted);font-size:1.05rem}
+
+/* ferramenta */
+.tool{background:var(--surface);border:1px solid var(--line);border-radius:18px;margin-top:20px;padding:18px;display:grid;grid-template-columns:minmax(0,1.7fr) minmax(0,1fr);gap:20px}
+.stage-col{min-width:0;align-self:start}
+@media (min-width:901px){.stage-col{position:sticky;top:12px}}
+.panel{min-width:0;display:flex;flex-direction:column;gap:16px}
+.drop{border:2px dashed var(--sage);border-radius:14px;background:var(--sage-pale);min-height:360px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;text-align:center;padding:28px 18px;cursor:pointer;transition:background .15s,border-color .15s}
+.drop.over{background:#DDE9D2;border-color:var(--green)}
+.drop svg{width:54px;height:54px;color:var(--green)}
+.drop h2{font-size:1.5rem}
+.drop p{max-width:42ch;color:var(--muted);font-size:.95rem}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+.stagebar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:10px;font-size:.88rem}
+.stagebar .hint{color:var(--muted);flex:1 1 220px}
+.stage{position:relative;border-radius:14px;overflow:hidden;background:#222;line-height:0;user-select:none;touch-action:pan-y}
+.stage canvas{display:block;width:100%;height:auto}
+.stage .after{position:absolute;inset:0;clip-path:inset(0 0 0 50%)}
+.stage .ov{position:absolute;inset:0;pointer-events:none}
+.stage.edit .ov{pointer-events:auto;cursor:crosshair}
+.tagl{position:absolute;top:10px;padding:4px 12px;border-radius:999px;background:rgba(46,46,46,.78);color:#fff;font:600 .78rem var(--sans);letter-spacing:.04em;text-transform:uppercase;line-height:1.4}
+.tagl.l{left:10px}.tagl.r{right:10px;background:rgba(68,96,58,.9)}
+.handle{position:absolute;top:0;bottom:0;left:50%;width:44px;margin-left:-22px;cursor:ew-resize;touch-action:none;display:flex;align-items:center;justify-content:center}
+.handle::before{content:"";position:absolute;top:0;bottom:0;left:50%;width:3px;margin-left:-1.5px;background:#fff;box-shadow:0 0 0 1px rgba(0,0,0,.25)}
+.handle i{position:relative;width:38px;height:38px;border-radius:50%;background:#fff;box-shadow:0 1px 6px rgba(0,0,0,.35);display:flex;align-items:center;justify-content:center;color:var(--green-dark)}
+.handle svg{width:20px;height:20px}
+.stage.edit .handle,.stage.edit .tagl{display:none}
+.busy{position:absolute;inset:0;display:none;align-items:center;justify-content:center;background:rgba(250,250,247,.7);font:600 .95rem var(--sans);color:var(--green-dark);line-height:1.4}
+.busy.on{display:flex}
+.disclaimer{margin-top:10px;font-size:.84rem;color:var(--muted)}
+
+.step{border:1px solid var(--line);border-radius:14px;padding:14px;background:var(--bg)}
+.step h3{font-size:1.1rem;display:flex;align-items:center;gap:10px}
+.step h3 .n{flex:none;width:26px;height:26px;border-radius:50%;background:var(--green);color:#fff;font:600 .85rem var(--serif);display:inline-flex;align-items:center;justify-content:center}
+.step p.s{margin-top:6px;font-size:.9rem;color:var(--muted)}
+.row{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px;align-items:center}
+.chip{border:1.5px solid var(--line);background:var(--surface);color:var(--ink);border-radius:999px;padding:7px 14px;font:500 .86rem var(--sans);cursor:pointer;min-height:36px}
+.chip[aria-pressed="true"]{background:var(--green);border-color:var(--green);color:#fff}
+label.rg{display:block;margin-top:12px;font-size:.88rem;font-weight:600}
+input[type=range]{width:100%;accent-color:var(--green)}
+.rv{display:flex;justify-content:space-between;font-size:.8rem;color:var(--muted)}
+
+.sw{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-top:12px}
+.sw button{border:2px solid var(--line);background:var(--surface);border-radius:12px;padding:6px 4px 7px;display:flex;flex-direction:column;align-items:center;gap:5px;cursor:pointer;font:500 .74rem var(--sans);color:var(--ink);min-width:0}
+.sw button i{display:block;width:100%;height:30px;border-radius:7px;border:1px solid rgba(0,0,0,.12)}
+.sw button span{display:block;max-width:100%;text-align:center;line-height:1.2}
+.sw button[aria-pressed="true"]{border-color:var(--green);background:var(--sage-pale)}
+.sw button.none i{background:repeating-linear-gradient(45deg,#eee 0 6px,#fff 6px 12px)}
+.warn{margin-top:10px;font-size:.84rem;background:var(--gold-pale);border-left:3px solid var(--gold);padding:8px 11px;border-radius:0 8px 8px 0;color:var(--ink-strong)}
+.actions{display:flex;flex-direction:column;gap:8px}
+.tips{margin:8px 0 0;padding-left:18px;font-size:.92rem;color:var(--ink)}
+.tips li{margin:5px 0}
+.privacy{font-size:.84rem;color:var(--muted)}
+
+/* seções */
+section.blk{padding-block:48px 8px}
+section.blk h2{font-size:clamp(1.55rem,3.2vw,2.1rem)}
+.lead{margin-top:8px;max-width:64ch;color:var(--muted)}
+.cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr));gap:16px;margin-top:22px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:20px;min-width:0}
+.card h3{font-size:1.2rem}
+.card .big{font-family:var(--serif);font-weight:600;color:var(--green-dark);font-size:1.9rem;line-height:1.1;margin-top:8px}
+.card .big small{font:500 .9rem var(--sans);color:var(--muted)}
+.card p.d{margin-top:8px;font-size:.92rem;color:var(--muted)}
+.card.gold{background:var(--gold-pale);border-color:#E7D9B8}
+.card ul{list-style:none;margin:12px 0 0;padding:0;display:flex;flex-direction:column;gap:7px;font-size:.93rem}
+.card li{display:flex;gap:9px;align-items:flex-start}
+.card li svg{flex:none;width:18px;height:18px;margin-top:3px}
+.ok svg{color:var(--green)}
+.no svg{color:var(--neg)}
+.tag{display:inline-block;font:600 .74rem var(--sans);letter-spacing:.05em;text-transform:uppercase;padding:3px 10px;border-radius:999px;background:var(--sage-pale);color:var(--green-dark);margin-bottom:10px}
+.tag.neg{background:var(--neg-pale);color:var(--neg)}
+.est{margin-top:22px;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.3fr);gap:20px;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:20px}
+.est input[type=number]{width:100%;font:600 1.2rem var(--sans);padding:10px 12px;border:1.5px solid var(--line);border-radius:10px;background:var(--bg);color:var(--ink-strong)}
+.est .out div{display:flex;justify-content:space-between;gap:12px;padding:9px 0;border-bottom:1px solid var(--line);font-size:.95rem}
+.est .out div:last-child{border-bottom:0}
+.est .out b{font-variant-numeric:tabular-nums;color:var(--green-dark);text-align:right}
+.note{margin-top:12px;font-size:.85rem;color:var(--muted);max-width:70ch}
+.link-row{margin-top:16px}
+
+details{background:var(--surface);border:1px solid var(--line);border-radius:12px;margin-top:10px}
+summary{cursor:pointer;list-style:none;padding:15px 48px 15px 18px;font:600 1rem var(--sans);color:var(--ink-strong);position:relative}
+summary::-webkit-details-marker{display:none}
+summary::after{content:"+";position:absolute;right:18px;top:50%;transform:translateY(-50%);font:500 1.5rem var(--sans);color:var(--green)}
+details[open] summary::after{content:"-"}
+details .a{padding:0 18px 16px;color:var(--ink);font-size:.96rem;max-width:75ch}
+.faq{margin-top:18px}
+
+.cta{margin-top:56px;background:var(--ink-block,#2E2E2E);color:#fff;border-radius:18px;padding:30px 24px;display:flex;flex-wrap:wrap;gap:18px;align-items:center;justify-content:space-between}
+.cta h2{color:#fff;font-size:clamp(1.4rem,3vw,1.9rem);max-width:24ch}
+.cta p{color:#D8D8D2;margin-top:6px;max-width:48ch;font-size:.95rem}
+footer{margin-top:44px;border-top:1px solid var(--line);background:var(--surface)}
+footer .wrap{padding-block:26px;display:flex;flex-wrap:wrap;gap:22px;justify-content:space-between;align-items:flex-start}
+footer img{height:54px;width:auto}
+footer .f{font-size:.9rem;color:var(--ink);min-width:0}
+footer .f b{color:var(--ink-strong)}
+footer .sl{font-family:var(--serif);font-style:italic;color:var(--green-dark);margin-top:8px}
+
+@media (max-width:900px){
+  .tool{grid-template-columns:minmax(0,1fr);padding:14px}
+  .est{grid-template-columns:minmax(0,1fr)}
+}
+@media (max-width:520px){
+  .brand span{display:none}
+  .top .btn{padding:10px 16px}
+  .sw{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .drop{min-height:300px}
+}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition:none!important}}
+
+.busy .bx{display:flex;flex-direction:column;align-items:center;gap:8px;text-align:center;padding:18px 22px;background:rgba(255,255,255,.94);border-radius:14px;max-width:min(88%,360px);box-shadow:0 2px 14px rgba(0,0,0,.18)}
+.busy .bx span{font:400 .85rem var(--sans);color:var(--muted)}
+.busy .bx b{font:600 1rem var(--serif);color:var(--ink-strong)}
+.busy{background:rgba(30,30,30,.35)}
+.spin{width:30px;height:30px;border-radius:50%;border:3px solid var(--sage-pale);border-top-color:var(--green);animation:sp 1s linear infinite}
+@keyframes sp{to{transform:rotate(360deg)}}
+.pb{width:100%;height:6px;border-radius:4px;background:var(--sage-pale);overflow:hidden}
+.pb i{display:block;height:100%;width:5%;background:var(--green);border-radius:4px;transition:width .6s linear}
+.err{margin:0;font-size:.88rem;background:var(--neg-pale);border-left:3px solid var(--neg);padding:8px 11px;border-radius:0 8px 8px 0;color:var(--ink-strong)}
+.sw button[disabled]{opacity:.5;cursor:wait}
+@media (prefers-reduced-motion:reduce){.spin{animation-duration:3s}}
+</style>
+</head>
+<body>
+<!-- Google Tag Manager (noscript) -->
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-MDFBDRLK"
+height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<!-- End Google Tag Manager (noscript) -->
+
+
+
+<header class="top">
+  <div class="wrap">
+    <img src="logo.png" alt="Logo Do Teto ao Jardim">
+    <div class="brand"><b>Do Teto ao Jardim</b><span>Limpeza de telhado, impermeabilização e cuidados da casa</span></div>
+    <a class="btn wa" target="_blank" rel="noopener" href="https://wa.me/5511994140104">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 11.5a8.5 8.5 0 0 1-12.6 7.4L3 20.5l1.7-5A8.5 8.5 0 1 1 21 11.5Z"/></svg>
+      Pedir orçamento</a>
+  </div>
+</header>
+
+<main class="wrap">
+  <div class="hero">
+    <h1>Veja seu telhado limpo antes de contratar</h1>
+    <p>Envie uma foto do telhado sujo. Mostramos na hora uma simulação do telhado limpo e você escolhe a cor da tinta emborrachada.</p>
+  </div>
+
+  <div class="tool" id="ferramenta">
+    <div class="stage-col">
+      <label class="drop" id="drop" for="file">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11.5 12 4l9 7.5"/><path d="M5.5 10v9.5h13V10"/><path d="M12 16.5v-5"/><path d="m9.5 13.5 2.5-2.5 2.5 2.5"/></svg>
+        <h2>Envie a foto do seu telhado</h2>
+        <p>Toque para escolher uma foto ou arraste o arquivo para cá. Funciona com foto tirada do celular.</p>
+        <span class="btn">Escolher foto</span>
+        <span class="privacy" id="priv">A foto é processada por uma IA do Google para gerar a simulação. Nós não guardamos a foto.</span>
+      </label>
+      <input class="sr" type="file" id="file" accept="image/*">
+
+      <div id="work" hidden>
+        <div class="stagebar"><span class="hint" id="hint">Arraste a barra para comparar o antes e o depois.</span></div>
+        <div class="stage" id="stage">
+          <canvas id="c-before" aria-label="Foto original do telhado"></canvas>
+          <canvas class="after" id="c-after" aria-label="Simulação do telhado feita por IA"></canvas>
+          <span class="tagl l">Antes</span><span class="tagl r" id="tag-after">Limpo</span>
+          <div class="handle" id="handle" role="slider" tabindex="0" aria-label="Comparar antes e depois" aria-valuemin="0" aria-valuemax="100" aria-valuenow="50"><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m8 7-5 5 5 5"/><path d="m16 7 5 5-5 5"/></svg></i></div>
+          <div class="busy" id="busy" role="status" aria-live="polite"><div class="bx"><div class="spin" aria-hidden="true"></div><b id="busy-t">A IA está desenhando o seu telhado limpo</b><span id="busy-s">Leva de 10 a 40 segundos. Não feche a página.</span><div class="pb" aria-hidden="true"><i id="pb"></i></div></div></div>
+        </div>
+        <p class="disclaimer">Imagem criada por inteligência artificial, só para ilustrar. O resultado real depende do estado do telhado e do tipo de telha. A equipe confirma tudo na visita técnica.</p>
+      </div>
+    </div>
+
+    <aside class="panel">
+      <div id="p-tips" class="step">
+        <h3>Para a simulação sair melhor</h3>
+        <ul class="tips">
+          <li>Fotografe o telhado de frente, com luz do dia.</li>
+          <li>Pegue o máximo de telhado na foto.</li>
+          <li>Evite foto com sombra forte sobre as telhas.</li>
+          <li>Evite pessoas e placas de veículos na imagem.</li>
+        </ul>
+      </div>
+
+      <div id="p-ctl" hidden class="panel">
+        <div class="step">
+          <h3><span class="n">1</span>Limpeza</h3>
+          <p class="s" id="s-clean">A IA gera o telhado limpo logo depois do envio.</p>
+          <div class="row"><button class="btn ghost sm" id="regen" type="button">Gerar de novo</button></div>
+        </div>
+
+        <div class="step">
+          <h3><span class="n">2</span>Cor da tinta emborrachada</h3>
+          <p class="s">Escolha uma cor e a IA pinta o telhado limpo. Cada cor leva de 10 a 40 segundos.</p>
+          <p class="s" id="left" style="font-weight:600"></p>
+          <div class="sw" id="sw" role="group" aria-label="Cores"></div>
+          <p class="warn">A pintura só é feita com o telhado limpo. Por isso a limpeza vem sempre antes.</p>
+          <p class="s" style="margin-top:8px">Cores de referência para a simulação. Confirmamos as cores disponíveis no orçamento.</p>
+        </div>
+        <p class="err" id="err" role="alert" hidden></p>
+
+        <div class="actions">
+          <a class="btn wa" id="wa-main" target="_blank" rel="noopener" href="https://wa.me/5511994140104">Pedir orçamento no WhatsApp</a>
+          <button class="btn ghost" id="dl" type="button">Baixar a simulação</button>
+          <button class="btn ghost" id="again" type="button">Usar outra foto</button>
+        </div>
+      </div>
+    </aside>
+  </div>
+
+  <section class="blk" id="preco">
+    <h2>Quanto custa por m²</h2>
+    <p class="lead">Médias praticadas pela Do Teto ao Jardim. O valor final do seu telhado sai na visita técnica.</p>
+    <div class="cols">
+      <div class="card">
+        <span class="tag">Limpeza</span>
+        <h3>Limpeza de telhado</h3>
+        <div class="big">R$ 15,95 a R$ 23,15 <small>por m²</small></div>
+        <p class="d">Varia com a metragem, o tipo de telha, a angulação, a altura e o grau de sujeira.</p>
+      </div>
+      <div class="card">
+        <span class="tag">Impermeabilização</span>
+        <h3>Tinta emborrachada</h3>
+        <div class="big">R$ 19 a R$ 23 <small>por m²</small></div>
+        <p class="d">Sempre aplicada depois da limpeza. É a pintura que você simula acima.</p>
+      </div>
+      <div class="card">
+        <span class="tag">Reforço</span>
+        <h3>Manta Bidim</h3>
+        <div class="big">R$ 51 a R$ 63 <small>por m²</small></div>
+        <p class="d">Para áreas críticas, como calhas e emendas.</p>
+      </div>
+    </div>
+    <div class="est">
+      <div>
+        <label for="area" style="font-weight:600">Área do telhado (m²)</label>
+        <input type="number" id="area" min="1" max="5000" step="1" value="120" inputmode="numeric">
+        <p class="note" style="margin-top:8px">Não sabe a metragem? A gente mede na visita.</p>
+      </div>
+      <div class="out" aria-live="polite">
+        <div><span>Só a limpeza</span><b id="e-limp"></b></div>
+        <div><span>Limpeza e tinta emborrachada</span><b id="e-tinta"></b></div>
+      </div>
+    </div>
+    <p class="note">Estimativa com base nas faixas por m² acima, só para ter uma ideia. Não é orçamento. Peça o valor exato pelo WhatsApp.</p>
+  </section>
+
+  <section class="blk" id="tipos">
+    <h2>Tipos de limpeza de telhado</h2>
+    <p class="lead">O método muda o resultado e o risco para as telhas.</p>
+    <div class="cols">
+      <div class="card">
+        <span class="tag">Método Do Teto ao Jardim</span>
+        <h3>Limpeza química de baixa pressão</h3>
+        <p class="d">O produto age diretamente sobre fungos, bactérias e limo. Não é uma limpeza genérica. Cerca de 80% evapora durante a aplicação, sob ação do sol. O restante vira pó e a chuva remove nos dias seguintes.</p>
+        <ul class="ok">
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12.500 4.500 4.500L19 7.500"/></svg>Sem alta pressão, sem quebrar telhas</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12.500 4.500 4.500L19 7.500"/></svg>Sem lama e sem respingo no quintal</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12.500 4.500 4.500L19 7.500"/></svg>Sem barulho, não afeta a pintura</li>
+        </ul>
+        <div class="link-row"><a class="btn ghost sm" id="lnk1" target="_blank" rel="noopener" href="http://dotetoaojardim.com.br/limpeza-de-telhados">Saiba mais sobre a limpeza química</a></div>
+      </div>
+      <div class="card">
+        <span class="tag neg">Método tradicional</span>
+        <h3>Lavagem com alta pressão de água</h3>
+        <p class="d">Tira a sujeira da superfície, mas traz riscos que muita gente só descobre depois.</p>
+        <ul class="no">
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"/></svg>Pode trincar e deslocar telhas</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"/></svg>Facilita infiltração e goteiras</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"/></svg>Gera lama, respingo e sujeira no quintal</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"/></svg>Desgasta a estrutura ao longo do tempo</li>
+        </ul>
+      </div>
+      <div class="card gold">
+        <span class="tag" style="background:#fff;color:var(--gold)">Depois da limpeza</span>
+        <h3>Impermeabilização</h3>
+        <p class="d">Com o telhado limpo, a tinta emborrachada protege contra infiltração. A manta Bidim reforça os pontos críticos. A pintura nunca é feita sobre telha suja, porque a tinta não adere.</p>
+        <div class="link-row"><a class="btn ghost sm" id="lnk2" target="_blank" rel="noopener" href="http://dotetoaojardim.com.br/limpeza-de-telhados">Ler mais no site</a></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="blk" id="duvidas">
+    <h2>Dúvidas frequentes</h2>
+    <div class="faq">
+      <details><summary>A simulação mostra como o meu telhado vai ficar de verdade?</summary><div class="a">Mostra uma ideia. A simulação é feita por inteligência artificial, a partir da sua foto. O resultado real depende do estado do telhado, do tipo de telha e da luz. A equipe confirma o que é possível na visita técnica.</div></details>
+      <details><summary>Por que preciso limpar antes de pintar?</summary><div class="a">Fungos, limo e sujeira impedem que a tinta grude na telha. Sobre telha suja, a pintura descasca e dura menos. Por isso a limpeza vem sempre antes da tinta emborrachada.</div></details>
+      <details><summary>A limpeza quebra telhas?</summary><div class="a">O nosso método é químico e de baixa pressão, sem alta pressão de água. Mesmo assim, a equipe sobe com cuidado e anda do jeito certo no telhado para não quebrar telhas.</div></details>
+      <details><summary>Qual a diferença entre limpeza e impermeabilização?</summary><div class="a">A limpeza remove fungos, bactérias e limo da telha. A impermeabilização, com tinta emborrachada, cria uma proteção contra infiltração. Uma complementa a outra, e a limpeza sempre vem primeiro.</div></details>
+      <details><summary>Como é calculado o preço?</summary><div class="a">Pela metragem do telhado, multiplicada por um valor por m². Esse valor varia com o tipo de telha, a angulação, a altura e o grau de sujeira. As faixas estão na seção de preços e o valor exato sai na visita técnica.</div></details>
+      <details><summary>As cores da simulação são as cores disponíveis?</summary><div class="a">São cores de referência para você visualizar. As cores disponíveis da tinta emborrachada são confirmadas no orçamento.</div></details>
+      <details><summary>O que acontece com a minha foto?</summary><div class="a">A foto é enviada para uma inteligência artificial do Google, só para gerar a simulação. Nós não guardamos a foto no nosso servidor. Evite enviar fotos com pessoas ou placas de veículos. Se você pedir um orçamento, pode mandar a foto pelo WhatsApp se quiser.</div></details>
+      <details><summary>Onde vocês atendem?</summary><div class="a">Em Bragança Paulista e região, incluindo Atibaia, Tuiuti, Pedra Bela e Pinhalzinho. Já foram mais de 42 telhados limpos com sucesso.</div></details>
+    </div>
+  </section>
+
+  <div class="cta">
+    <div>
+      <h2>Quer um valor exato para o seu telhado?</h2>
+      <p>Fale com o Nicolas pelo WhatsApp. Se puder, mande a foto do telhado e o endereço.</p>
+    </div>
+    <a class="btn wa" id="wa-cta" target="_blank" rel="noopener" href="https://wa.me/5511994140104" style="background:#fff;color:var(--green-dark)">Pedir orçamento no WhatsApp</a>
+  </div>
+</main>
+
+<footer>
+  <div class="wrap">
+    <img src="logo.png" alt="Logo Do Teto ao Jardim">
+    <div class="f">
+      <b>Do Teto ao Jardim</b><br>
+      Nicolas Fábio Furlanetto<br>
+      CNPJ 45.346.097/0001-27<br>
+      Bragança Paulista e região (SP)
+      <div class="sl">"Cuidamos da sua casa como se fosse a nossa."</div>
+    </div>
+    <div class="f">
+      WhatsApp: (11) 99414-0104<br>
+      help@nffurlanetto.com.br<br>
+      <a href="http://dotetoaojardim.com.br/limpeza-de-telhados" target="_blank" rel="noopener">dotetoaojardim.com.br</a><br>
+      Instagram: @dotetoaojardim
+    </div>
+  </div>
+</footer>
+
+<script>
+(function(){
+  var $=function(id){return document.getElementById(id)};
+  var API_URL='/api/simular';          /* troque pelo endereço completo se a página ficar em outro domínio */
+  var WA='https://wa.me/5511994140104';
+  var COLORS=[
+    {n:'Cerâmica',h:'#B65A3C'},{n:'Vermelho colonial',h:'#A33B2E'},{n:'Marrom café',h:'#5E4032'},{n:'Cinza claro',h:'#A7A9A8'},
+    {n:'Cinza grafite',h:'#4A4D50'},{n:'Preto',h:'#26282A'},{n:'Verde musgo',h:'#556B4A'},{n:'Branco',h:'#E8E6E0'}
+  ];
+  var MAXD=1280;
+  var orig64=null,clean64=null,paint={},sel=null,busy=false,gen=0;
+  var cb=$('c-before'),ca=$('c-after');
+
+  function brl(v){return v.toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}
+  function showErr(t){var e=$('err');e.textContent=t||'';e.hidden=!t}
+
+  /* ---------- foto ---------- */
+  function fit(img){var sc=Math.min(1,MAXD/Math.max(img.naturalWidth,img.naturalHeight));return {w:Math.round(img.naturalWidth*sc),h:Math.round(img.naturalHeight*sc)}}
+  function toJpeg(src,w,h){var c=document.createElement('canvas');c.width=w;c.height=h;c.getContext('2d').drawImage(src,0,0,w,h);return c.toDataURL('image/jpeg',.86)}
+  function loadFile(f){
+    if(!f)return;var url=URL.createObjectURL(f),img=new Image();
+    img.onload=function(){URL.revokeObjectURL(url);start(img)};
+    img.onerror=function(){URL.revokeObjectURL(url);var p=$('priv');p.textContent='Não consegui abrir essa foto. Envie uma imagem JPG ou PNG.';p.style.color='#9C4A3E'};
+    img.src=url}
+  function drawTo(c,src,w,h){c.width=w;c.height=h;c.getContext('2d').drawImage(src,0,0,w,h)}
+  function start(img){
+    var d=fit(img);orig64=toJpeg(img,d.w,d.h);clean64=null;paint={};sel=null;
+    drawTo(cb,img,d.w,d.h);drawTo(ca,img,d.w,d.h);
+    [].forEach.call($('sw').children,function(b,i){b.setAttribute('aria-pressed',i===0)});
+    $('tag-after').textContent='Limpo';
+    $('drop').hidden=true;$('work').hidden=false;$('p-tips').hidden=true;$('p-ctl').hidden=false;
+    setSplit(50);showErr('');waLinks();leftTxt();
+    $('ferramenta').scrollIntoView({behavior:'smooth',block:'start'});
+    makeClean()}
+
+  /* ---------- chamada à IA ---------- */
+  function show64(data){return new Promise(function(ok,no){var im=new Image();im.onload=function(){ok(im)};im.onerror=no;im.src=data})}
+  function api(image,color){
+    var ctl=new AbortController(),to=setTimeout(function(){ctl.abort()},110000);
+    return fetch(API_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({image:image,color:color?color.n:null}),signal:ctl.signal})
+      .then(function(r){clearTimeout(to);return r.json().catch(function(){return {}}).then(function(j){if(!r.ok)throw {status:r.status,msg:j&&j.error};return j})})
+      .catch(function(e){clearTimeout(to);throw e})}
+  var pt=null;
+  function setBusy(on,title,sub){
+    busy=on;$('busy').classList.toggle('on',on);[].forEach.call($('sw').children,function(b){b.disabled=on});$('regen').disabled=on;$('dl').disabled=on;
+    clearInterval(pt);
+    if(on){$('busy-t').textContent=title;$('busy-s').textContent=sub||'Leva de 10 a 40 segundos. Não feche a página.';var p=5,bar=$('pb');bar.style.width='5%';pt=setInterval(function(){p=Math.min(92,p+(92-p)*.07);bar.style.width=p+'%'},700)}}
+  function errMsg(e){
+    if(e&&e.status===429)return 'Muitas simulações em pouco tempo. Aguarde alguns minutos e tente de novo, ou peça o orçamento pelo WhatsApp.';
+    if(e&&e.status===413)return 'A foto ficou grande demais. Tente outra foto.';
+    if(e&&e.status===422)return (e.msg||'A IA não conseguiu criar a imagem dessa foto.')+' Tente outra foto, com o telhado mais à mostra.';
+    if(e&&e.name==='AbortError')return 'A IA demorou mais que o normal. Toque em "Gerar de novo".';
+    if(e&&e.status>=500)return 'O serviço de IA está indisponível agora. Tente de novo em instantes.';
+    return 'Não foi possível falar com o servidor. Confira a internet e tente de novo.'}
+  function makeClean(){
+    var my=++gen;showErr('');$('s-clean').textContent='A IA está criando o telhado limpo.';
+    setBusy(true,'A IA está desenhando o seu telhado limpo');
+    api(orig64,null).then(function(j){if(my!==gen)return;clean64=j.image;return show64(clean64).then(function(im){drawTo(ca,im,cb.width,cb.height);sel=null;$('tag-after').textContent='Limpo';
+      [].forEach.call($('sw').children,function(b,i){b.setAttribute('aria-pressed',i===0)});$('s-clean').textContent='Pronto. Arraste a barra para comparar.'})})
+    .catch(function(e){if(my!==gen)return;$('s-clean').textContent='Não foi possível gerar o telhado limpo.';showErr(errMsg(e))})
+    .then(function(){if(my===gen)setBusy(false)})}
+  /* limite: 3 tentativas de cor por navegador a cada 24 horas (qualquer cor). Rever uma cor já gerada não gasta tentativa. */
+  var MAXC=3,KEY='dtj_cores',DAY=864e5;
+  function usedC(){try{var o=JSON.parse(localStorage.getItem(KEY)||'null');if(o&&Date.now()-o.t<DAY)return o.n}catch(e){}return 0}
+  function addC(){try{var o=JSON.parse(localStorage.getItem(KEY)||'null');if(!o||Date.now()-o.t>=DAY)o={n:0,t:Date.now()};o.n++;localStorage.setItem(KEY,JSON.stringify(o))}catch(e){}}
+  function leftTxt(){var l=Math.max(0,MAXC-usedC());
+    $('left').textContent=l>0?('Você tem '+l+(l===1?' tentativa':' tentativas')+' de '+MAXC+' para testar cores. Pode escolher qualquer cor.'):'Você usou as '+MAXC+' tentativas do teste. Para ver outras cores, peça o orçamento pelo WhatsApp.';
+    [].forEach.call(swEl.children,function(b,i){if(i===0)return;var c=COLORS[i-1];b.classList.toggle('lock',l===0&&!paint[c.n]);b.style.opacity=(l===0&&!paint[c.n])?'.45':''})}
+  function makePaint(c,btn){
+    if(!clean64){showErr('Gere primeiro o telhado limpo.');return}
+    if(paint[c.n]){applyPaint(c,btn,paint[c.n]);return}
+    if(usedC()>=MAXC){showErr('Você usou as '+MAXC+' tentativas do teste. Peça o orçamento pelo WhatsApp e mostramos outras opções de cor.');leftTxt();pick(null,swEl.children[0],true);return}
+    var my=++gen;showErr('');setBusy(true,'A IA está pintando o telhado de '+c.n.toLowerCase());
+    show64(clean64).then(function(im){return api(toJpeg(im,cb.width,cb.height),c)}).then(function(j){if(my!==gen)return;paint[c.n]=j.image;addC();leftTxt();return applyPaint(c,btn,j.image)})
+    .catch(function(e){if(my!==gen)return;showErr(errMsg(e));pick(null,$('sw').children[0],true)})
+    .then(function(){if(my===gen)setBusy(false)})}
+  function applyPaint(c,btn,data){return show64(data).then(function(im){drawTo(ca,im,cb.width,cb.height);sel=c;$('tag-after').textContent='Pintado: '+c.n;
+    [].forEach.call($('sw').children,function(b){b.setAttribute('aria-pressed',b===btn)});waLinks()})}
+
+  /* ---------- comparador ---------- */
+  var split=50;
+  function setSplit(p){split=Math.max(2,Math.min(98,p));ca.style.clipPath='inset(0 0 0 '+split+'%)';$('handle').style.left=split+'%';$('handle').setAttribute('aria-valuenow',Math.round(split))}
+  (function(){var st=$('stage'),hd=$('handle'),drag=false;
+    function mv(e){var r=st.getBoundingClientRect();setSplit((e.clientX-r.left)/r.width*100)}
+    hd.addEventListener('pointerdown',function(e){drag=true;hd.setPointerCapture(e.pointerId);e.preventDefault()});
+    hd.addEventListener('pointermove',function(e){if(drag)mv(e)});
+    hd.addEventListener('pointerup',function(){drag=false});hd.addEventListener('pointercancel',function(){drag=false});
+    st.addEventListener('pointerdown',function(e){if(busy||e.target===hd||hd.contains(e.target))return;drag=true;mv(e);try{hd.setPointerCapture(e.pointerId)}catch(x){}});
+    hd.addEventListener('keydown',function(e){if(e.key==='ArrowLeft')setSplit(split-4);if(e.key==='ArrowRight')setSplit(split+4)})})();
+
+  /* ---------- controles ---------- */
+  var swEl=$('sw');
+  function pick(c,btn,silent){[].forEach.call(swEl.children,function(b){b.setAttribute('aria-pressed',b===btn)});
+    if(!c){sel=null;$('tag-after').textContent='Limpo';if(clean64&&!silent){show64(clean64).then(function(im){drawTo(ca,im,cb.width,cb.height)})}else if(silent&&clean64){show64(clean64).then(function(im){drawTo(ca,im,cb.width,cb.height)})}waLinks();return}
+    makePaint(c,btn)}
+  (function(){
+    var none=document.createElement('button');none.type='button';none.className='none';none.setAttribute('aria-pressed','true');none.innerHTML='<i></i><span>Só a limpeza</span>';
+    none.addEventListener('click',function(){if(!busy)pick(null,none)});swEl.appendChild(none);
+    COLORS.forEach(function(c){var b=document.createElement('button');b.type='button';b.setAttribute('aria-pressed','false');b.innerHTML='<i style="background:'+c.h+'"></i><span>'+c.n+'</span>';
+      b.addEventListener('click',function(){if(!busy)pick(c,b)});swEl.appendChild(b)})})();
+  leftTxt();
+  $('regen').addEventListener('click',function(){if(orig64&&!busy){paint={};leftTxt();makeClean()}});
+  $('again').addEventListener('click',function(){gen++;setBusy(false);$('file').value='';orig64=clean64=null;paint={};leftTxt();sel=null;$('work').hidden=true;$('drop').hidden=false;$('p-ctl').hidden=true;$('p-tips').hidden=false;showErr('');
+    var p=$('priv');p.textContent='A foto é processada por uma IA do Google para gerar a simulação. Nós não guardamos a foto.';p.style.color=''});
+  var f=$('file'),dr=$('drop');
+  f.addEventListener('change',function(){loadFile(f.files&&f.files[0])});
+  ['dragenter','dragover'].forEach(function(t){dr.addEventListener(t,function(e){e.preventDefault();dr.classList.add('over')})});
+  ['dragleave','drop'].forEach(function(t){dr.addEventListener(t,function(e){e.preventDefault();dr.classList.remove('over')})});
+  dr.addEventListener('drop',function(e){var fl=e.dataTransfer&&e.dataTransfer.files&&e.dataTransfer.files[0];if(fl)loadFile(fl)});
+
+  /* ---------- baixar ---------- */
+  $('dl').addEventListener('click',function(){
+    if(!clean64)return;var bar=Math.round(cb.width*.05),c=document.createElement('canvas');c.width=cb.width;c.height=cb.height+bar;var x=c.getContext('2d');
+    x.drawImage(ca,0,0);x.fillStyle='#2E2E2E';x.fillRect(0,cb.height,c.width,bar);x.fillStyle='#fff';x.font='600 '+Math.round(bar*.42)+'px "Work Sans",Calibri,sans-serif';x.textBaseline='middle';
+    x.fillText('Simulação criada por IA, ilustrativa  |  Do Teto ao Jardim  |  (11) 99414-0104',Math.round(c.width*.02),cb.height+bar/2);
+    c.toBlob(function(b){if(!b)return;var a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='simulacao-telhado-do-teto-ao-jardim.jpg';document.body.appendChild(a);a.click();setTimeout(function(){URL.revokeObjectURL(a.href);a.remove()},1500)},'image/jpeg',.92)});
+
+  /* ---------- whatsapp ---------- */
+  function waLinks(){
+    var t='Olá, Nicolas! Usei o simulador do site e quero um orçamento para o meu telhado.'+(sel?(' Cor de tinta que escolhi: '+sel.n+'.'):'')+' Posso enviar a foto por aqui.';
+    var u=WA+'?text='+encodeURIComponent(t);[].forEach.call(document.querySelectorAll('a.wa'),function(a){a.href=u})}
+  waLinks();
+
+  /* ---------- estimativa ---------- */
+  function est(){var a=parseFloat($('area').value);if(!(a>0)){$('e-limp').textContent='-';$('e-tinta').textContent='-';return}
+    $('e-limp').textContent=brl(a*15.95)+' a '+brl(a*23.15);
+    $('e-tinta').textContent=brl(a*(15.95+19))+' a '+brl(a*(23.15+23))}
+  $('area').addEventListener('input',est);est();
+})();
+</script>
+
+</body>
+</html>
